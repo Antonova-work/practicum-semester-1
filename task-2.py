@@ -28,7 +28,7 @@ def win_first(line1, line2, line3):
     flag = 0
     if (line1 == [['×'], ['×'], ['×']] or line2 == [['×'], ['×'], ['×']] or
         line3 == [['×'], ['×'], ['×']] or
-        (line1[0] == line2[0] == line3[0] == ['×']) or
+        (line1[0] == line2[0] == line3[0] == ['×']) or 
         (line1[1] == line2[1] == line3[1] == ['×']) or
         (line1[2] == line2[2] == line3[2] == ['×']) or
         (line1[0] == line2[1] == line3[2] == ['×']) or

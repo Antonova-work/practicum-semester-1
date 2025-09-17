@@ -13,7 +13,7 @@
 '''
 
 from random import randint
-fin1 = randint(0, 9)
+fin1 = randint(1, 9)
 fin2 = randint(0, 9)
 fin3 = randint(0, 9)
 fin4 = randint(0, 9)
@@ -33,6 +33,9 @@ while True:
         continue
     ls = list(st)    
     ls0 = list(st0)
+    if ls[0] == '0':
+        print("Не вводите с нуля")
+        continue
     bulls = 0
     for j in range(4):        
          if ls[j] == ls0[j]:
