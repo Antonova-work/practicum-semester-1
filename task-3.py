@@ -30,44 +30,30 @@ array = [
 
 
 def _random_amount_button() -> int:
-    """
-    Генерирует случайное кол-во пуговиц
-    """
-    random_number = random.randint(1, 64)
+    random_number = random.randint(1, 64) #количество фишек на поле.
     logger.debug(f'Random number: {random_number}')
     return random_number
 
 
 def place_random_buttons():
-    """
-    Ставит в случайном порядке пуговицы на игровое поле.
-    """
-    random_number = _random_amount_button()
+    random_number = _random_amount_button() #Получение случайного количества фишек.
     for i in range(random_number):
-        random_row = random.randint(0, 7)
+        random_row = random.randint(0, 7) #Выбираются случайные координаты клетки (строка и столбец от 0 до 7).
         random_col = random.randint(0, 7)
-        array[random_row][random_col] = '●'
+        array[random_row][random_col] = '●' #В выбранную клетку записывается символ фишка.
 
 
-def _remove_row(selected_row: str) -> None:
-    """
-    Очищает ряд с игрового поля (массива).
-    selected_row: – выбранный ряд
-    """
-    row_index = alphabet.find(selected_row)
+def _remove_row(selected_row: str) -> None: #Функции для выполнения хода 
+    row_index = alphabet.find(selected_row) #Преобразование буквы в числовой индекс строки с помощью поиска в строке alphabet.
     logger.debug(row_index)
-    for element_index in range(0, len(array[row_index])):
+    for element_index in range(0, len(array[row_index])): #Цикл по всем элементам выбранной строки. Каждый элемент заменяется на "○", очищая всю строку.
         array[row_index][element_index] = "○"
 
 
 def _remove_column(selected_column: int) -> None:
-    """
-    Очищает столбец с игрового поля (массива).
-    selected_column: – выбранный столбец
-    """
-    column_index = selected_column - 1
+    column_index = selected_column - 1 #Преобразование номера столбца в индекс массива.
     logger.debug(column_index)
-    for row_index in range(8):
+    for row_index in range(8): #Цикл по всем строкам игрового поля. Для каждой строки элемент в выбранном столбце заменяется на "○", очищая весь столбец.
         array[row_index][column_index] = "○"
 
 
@@ -77,56 +63,46 @@ def select_move():
 
 
 def check_row(selected_row: str) -> bool:
-    """
-    Проверяет, есть ли в ряду пуговицы
-    selected_row: выбранный ряд (a-h)
-    """
-    row_index = alphabet.find(selected_row)
+    row_index = alphabet.find(selected_row) #Поиск индекса строки по букве.
     logger.debug(row_index)
-    if "●" in array[row_index]:
+    if "●" in array[row_index]: #Проверка наличия хотя бы одной фишки ("●") в указанной строке. Возвращает True, если фишки есть.
         return True
     return False
 
 
 def check_column(selected_column: int) -> bool:
-    """
-    Проверяет, есть ли в столбце пуговицы
-    selected_column: выбранный столбец (1-8)
-    """
-    column_index = selected_column - 1
+    column_index = selected_column - 1 # Преобразование номера столбца в индекс.
     logger.debug(column_index)
-    for row_index in range(8):
+    for row_index in range(8): #Цикл по всем строкам. Если в какой-либо строке найден столбец с фишкой, сразу возвращается True.
         if array[row_index][column_index] == "●":
             return True
     return False
 
 
-def make_move(move):
-    """
-    Определяет выбранный ход пользователя и удаляет пуговицы с игрового поля.
-    move: – ход
-    """
-    if move == "":
+def make_move(move): 
+    if move == "": #Проверка на пустой ввод.
         logger.debug("Invalid move")
         select_move()
-    try:
+    try: #Попытка преобразовать ввод в целое число. Если успешно — пользователь, вероятно, ввел номер столбца.
         move = int(move)
-        if (1 <= move <= 8) and check_column(move):
+        if (1 <= move <= 8) and check_column(move): #Если проверка пройдена, очищается столбец.
             _remove_column(move)
         else:
-            logger.debug("Invalid move")
+            logger.debug("Invalid move") #Если проверка не пройдена, ход считается невалидным, и функция select_move вызывается снова (рекурсия).
             select_move()
     except ValueError:
-        if (move in alphabet) and (check_row(move)):
-            _remove_row(move)
+        if (move in alphabet) and (check_row(move)): #Проверка, что буква есть в alphabet и в строке есть фишки.
+            _remove_row(move) #Если проверка пройдена, очищается строка.
         else:
-            logger.debug("Invalid move")
+            logger.debug("Invalid move") #Если проверка не пройдена, ход считается невалидным.
             select_move()
 
 
 def check_array() -> bool:
     """
-    Проверяет, имеет ли игровое поле внутри себя пуговицы.
+    Двойной цикл по всем клеткам поля. Если встречается хотя бы одна непустая клетка (не "○"), 
+    функция сразу возвращает True (фишки еще есть). 
+    Если все клетки пусты, возвращает False (игра окончена).
     """
     for row in array:
         for element in row:
@@ -138,23 +114,16 @@ def check_array() -> bool:
 
 
 def process_game_moves(current_move: int) -> int:
-    """
-    Рекурсивная функция, отвечающая за процесс игры.
-
-    Если игровое поле (массив) ещё имеет пуговицы, то игра продолжается
-    current_move: – 123
-    return: Последнего игрока (победителя)
-    """
-    if current_move == 0:
+    if current_move == 0: #Корректировка номера хода для красивого отображения (чтобы игроки были 1 и 2, а не 0 и 1).
         current_move = 2
-    fisrt_player_move = input(f"Ход {current_move} игрока: ")
+    fisrt_player_move = input(f"Ход {current_move} игрока: ") #Запрос хода у текущего игрока.
     make_move(fisrt_player_move)
     make_pretty_field()
-    result = current_move
-    if check_array():
+    result = current_move # Сохранение номера текущего игрока в переменную result (это будет победитель, если ход был последним).
+    if check_array(): #Проверка, остались ли фишки на поле.
         current_move = (current_move + 1) % 2
         result = process_game_moves(current_move)
-    return result
+    return result #Когда фишек не осталось (check_array() вернула False), функция возвращает номер игрока, который только что походил (то есть победителя).
 
 
 def make_pretty_field():
@@ -176,10 +145,10 @@ def game():
     Запускает игру.
     """
     print("Здравствуйте! Играйте.")
-    place_random_buttons()
-    make_pretty_field()
-    current_move = 1
-    winner = process_game_moves(current_move)
+    place_random_buttons() #Случайная расстановка фишек на поле.
+    make_pretty_field() #Первоначальная отрисовка поля.
+    current_move = 1 #Определение, что первым ходит игрок №1.
+    winner = process_game_moves(current_move) #Запуск основного игрового цикла через вызов process_game_moves. Функция завершится, когда игра закончится, и вернет номер победителя.
     print(f'Игра окончена! Победил {winner} игрок!')
 
 
