@@ -15,11 +15,8 @@
 целью победить в игре.
 '''
 
-import logging
 import random
 
-logger = logging.getLogger()
-logger.setLevel(logging.WARN)
 
 alphabet = 'abcdefgh'
 array = [
@@ -28,10 +25,8 @@ array = [
     ] for _ in range(1, 8 + 1)
 ]
 
-
 def _random_amount_button() -> int:
     random_number = random.randint(1, 64) #количество фишек на поле.
-    logger.debug(f'Random number: {random_number}')
     return random_number
 
 
@@ -45,14 +40,12 @@ def place_random_buttons():
 
 def _remove_row(selected_row: str) -> None: #Функции для выполнения хода 
     row_index = alphabet.find(selected_row) #Преобразование буквы в числовой индекс строки с помощью поиска в строке alphabet.
-    logger.debug(row_index)
     for element_index in range(0, len(array[row_index])): #Цикл по всем элементам выбранной строки. Каждый элемент заменяется на "○", очищая всю строку.
         array[row_index][element_index] = "○"
 
 
 def _remove_column(selected_column: int) -> None:
     column_index = selected_column - 1 #Преобразование номера столбца в индекс массива.
-    logger.debug(column_index)
     for row_index in range(8): #Цикл по всем строкам игрового поля. Для каждой строки элемент в выбранном столбце заменяется на "○", очищая весь столбец.
         array[row_index][column_index] = "○"
 
@@ -64,7 +57,6 @@ def select_move():
 
 def check_row(selected_row: str) -> bool:
     row_index = alphabet.find(selected_row) #Поиск индекса строки по букве.
-    logger.debug(row_index)
     if "●" in array[row_index]: #Проверка наличия хотя бы одной фишки ("●") в указанной строке. Возвращает True, если фишки есть.
         return True
     return False
@@ -72,7 +64,6 @@ def check_row(selected_row: str) -> bool:
 
 def check_column(selected_column: int) -> bool:
     column_index = selected_column - 1 # Преобразование номера столбца в индекс.
-    logger.debug(column_index)
     for row_index in range(8): #Цикл по всем строкам. Если в какой-либо строке найден столбец с фишкой, сразу возвращается True.
         if array[row_index][column_index] == "●":
             return True
@@ -81,20 +72,17 @@ def check_column(selected_column: int) -> bool:
 
 def make_move(move): 
     if move == "": #Проверка на пустой ввод.
-        logger.debug("Invalid move")
         select_move()
     try: #Попытка преобразовать ввод в целое число. Если успешно — пользователь, вероятно, ввел номер столбца.
         move = int(move)
         if (1 <= move <= 8) and check_column(move): #Если проверка пройдена, очищается столбец.
             _remove_column(move)
-        else:
-            logger.debug("Invalid move") #Если проверка не пройдена, ход считается невалидным, и функция select_move вызывается снова (рекурсия).
+        else: #Если проверка не пройдена, ход считается невалидным, и функция select_move вызывается снова (рекурсия).
             select_move()
     except ValueError:
         if (move in alphabet) and (check_row(move)): #Проверка, что буква есть в alphabet и в строке есть фишки.
             _remove_row(move) #Если проверка пройдена, очищается строка.
-        else:
-            logger.debug("Invalid move") #Если проверка не пройдена, ход считается невалидным.
+        else:#Если проверка не пройдена, ход считается невалидным.
             select_move()
 
 

@@ -74,7 +74,7 @@ while end(line1, line2, line3) != 1:
     else:
         player = 'Второй игрок'
     argument = 0
-    while argument != 1:
+    while argument != 1: #выполняется пока игра не окончена.
         arg_move = 0 
         while arg_move != 1:
             move_line = input(f"{player}, введите номер строки, на" + '\n' +
@@ -90,7 +90,7 @@ while end(line1, line2, line3) != 1:
                 move_column = int(move_column) 
             else:
                 print('Ошибка, введите целое число от 1 до 3 вкл \n')
-        if count % 2 == 0:
+        if count % 2 == 0: 
             if line_list[move_line-1][move_column-1] == [' ']:
                 line_list[move_line-1][move_column-1] = ['×']
                 argument = 1
