@@ -109,6 +109,7 @@ while end(line1, line2, line3) != 1:
     print(line1)
     print(line2)
     print(line3)
+
 if win_first(line1, line2, line3):
     print('Победил первый игрок')
 elif win_second(line1, line2, line3):
